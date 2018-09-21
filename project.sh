@@ -5,7 +5,7 @@ CONFIG_FILE=$HOME/.config/project_tools
 
 # Check if config file exists
 if [[ -e $CONFIG_FILE ]]; then
-    source $HOME/.config/project_tools
+    source $CONFIG_FILE
 else
     echo "No config file found."
     exit 1
@@ -35,13 +35,15 @@ parse_regular_args() {
 }
 
 
+# Create a project
 create() {
     mkdir "$FOLDER"
     cd "$FOLDER"
 }
 
+# Open a project
 open() {
-    cd "$FOLDER"
+    
 }
 
 # Parse the operation
@@ -62,6 +64,7 @@ esac
 
 PROJECT="$1"; shift
 FOLDER="$PROJECTS_DIR/$PROJECT"
+
 
 if [[ "$OPERATION" == "CREATE" ]]; then
     parse_regular_args
