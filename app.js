@@ -1,20 +1,110 @@
 #!/usr/bin/env node
 
 var parser = require('commander')
+const fs = require('fs');
+const exec = require('child_process').exec;
+
+
+const config = JSON.parse(fs.readFileSync(require('os').homedir + '/.config/project_tools.json'));
+var _verbose = false;
+
+
+function log(level, output) {
+    if (level == 0 && _verbose) {
+        console.log(output);
+    }
+    else if (level == 1) {
+        console.log(output);
+    }
+}
+
+function execute(command) {
+    log(0, `Executing ${command}`);
+    exec(command, (err, stdout, stderr) => {
+        process.stdout.write(stdout);
+        process.stderr.write(stderr);
+    });
+}
+
 
 parser
-    .version('0.1.0', '-v, --version')
-    .option('-v, --verbose');
+    .version('0.1.0', '-V, --version')
+    .option('-v, --verbose', 'enable verbose', () => {
+        _verbose = true;
+    })
 
-// create function
+// Create feature
 parser
     .command('create [project]')
     .description('create a new project')
     .option('-g, --git', 'create a git repository')
     .option('-s, --sync', 'create the project in a synced folder and symlink it in the projects directory')
-    .option('-e, --editor [editor_name]', 'open the project in your favorite editor(or specify a diffrent one)')
-    .action(function(project, options) {
-        console.log("called create");
+    .option('-e, --editor', 'open the project in the project editor')
+    .option('-t, --terminal', 'open the project in a new terminal window')
+    .action((project, options) => {
+        log(0, 'Creating the project ' + project + '.');
+        log(0, 'Sync is set to ' + options.sync + '.');
+        log(0, 'Git is set to ' + options.git + '.');
+        log(0, 'Editor is set to ' + options.editor + '.');
+
+        if (options.sync === true) {
+            execute(`scripts/create_sync.sh ${config["project_sync_path"]} ${config["project_dir_path"]} ${project}`);
+            log(0, 'Created the sync project file.');
+        }
+        else {
+            execute(`scripts/create_project.sh ${config["project_dir_path"]} ${project}`);
+            log(0, 'Created the project file.');
+        }
+
+        if (options.git === true) {
+            execute(`scripts/git_init.sh ${config["project_dir_path"]}/${project}`);
+            log(0, 'Created the git repository');
+        }
+
+        if (options.editor === true) {
+            execute(`${config["editor"]} ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in the editor.');
+        }
+
+        if (options.terminal === true) {
+            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`)
+            log(0, 'Opened the project in a new terminal window.')
+        }
+        // TODO: open the project in the same terminal
+        else {
+            execute(`cd ${config["project_dir_path"]}/${project}`)
+            log(0, 'Opened the project in the same terminal.')
+        }
+        process.exit();
+
+    });
+
+// Open feature
+parser
+    .command('open [project]')
+    .description('open an existing project')
+    .option('-e, --editor', 'open the project in the project editor')
+    .option('-t, --terminal', 'open the project in a new terminal window')
+    .action((project, options) => {
+        log(0, 'Opening the project ' + project + '.');
+        log(0, 'Editor is set to ' + options.editor + '.');
+
+        if (options.editor === true) {
+            execute(`${config["editor"]} ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in the editor.');
+        }
+
+        if (options.terminal === true) {
+            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`)
+            log(0, 'Opened the project in a new terminal window.')
+        }
+        // TODO: open the project in the same terminal
+        else {
+            execute(`cd ${config["project_dir_path"]}/${project}`)
+            execute(`exec bash`);
+            log(0, 'Opened the project in the same terminal.')
+        }
+        process.exit();
     });
 
 parser.parse(process.argv);
