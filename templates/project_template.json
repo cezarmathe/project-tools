@@ -1,0 +1,12 @@
+{
+    "project" : {
+        "name" : "project-name",
+        "git" : false,
+        "sync" : false,
+        "editor" : "atom"
+    },
+    "constants" : {
+        "git_fetch" : false,
+        "open_in_editor" : false
+    }
+}
