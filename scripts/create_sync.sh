@@ -1,0 +1,17 @@
+#!/bin/bash
+
+SYNC_DIR="$1"; shift
+
+PROJECT_DIR="$1"; shift
+
+PROJECT_PATH="$1"; shift
+
+scripts/create_project.sh $SYNC_DIR $PROJECT_PATH
+
+FULL_SYNC_PATH="$SYNC_DIR/$PROJECT_PATH"
+
+FULL_PROJECT_PATH="$PROJECT_DIR/$PROJECT_PATH"
+
+ln -s $FULL_SYNC_PATH $FULL_PROJECT_PATH
+
+scripts/open_project.sh $PROJECT_DIR $PROJECT_PATH
