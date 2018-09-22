@@ -3,11 +3,11 @@
 A small utility for creating, opening and maintaining projects and project files.
 
 ## Setup
-Add this line to your ~/.bashrc file:
+Add this line to your `~/.bashrc` file:
 
     alias project='/path/to/the/project/source/folder/app.js'
 <br>
-Create a file in ~/.config named project_tools.json and use the template in templates/config_template.json.
+Create a file in `~/.config` named `project_tools.json` and use the template in `templates/config_template.json`.
 
 ## Usage
     project [command] [project] [options]
