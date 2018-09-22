@@ -3,24 +3,18 @@
 var parser = require('commander')
 
 parser
-    // version
     .version('0.1.0', '-v, --version')
-    // commands
-    .command('open [project]', "Open a project.").action(function (project) {
-        console.log("Opening " + project);
-    })
-    .command('create [project]', "Create a new project.").action(function (project) {
-        console.log("Creating " + project);
-    })
-    .command('config', "Configure utility parameters.").action(function () {
+    .option('-v, --verbose');
 
-    })
-    // options
-    .option('-s, --sync', 'Sync the project to Dropbox.')
-    .option('-o, --open', "Open the project in your favorite text editor.")
-    // parsing
-    .parse(process.argv);
+// create function
+parser
+    .command('create [project]')
+    .description('create a new project')
+    .option('-g, --git', 'create a git repository')
+    .option('-s, --sync', 'create the project in a synced folder and symlink it in the projects directory')
+    .option('-e, --editor [editor_name]', 'open the project in your favorite editor(or specify a diffrent one)')
+    .action(function(project, options) {
+        console.log("called create");
+    });
 
-// console.log("Sync: " + parser.sync);
-// console.log("Open: " + parser.open);
-console.log(parser.open);
+parser.parse(process.argv);
