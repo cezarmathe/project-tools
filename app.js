@@ -27,6 +27,26 @@ function execute(command) {
 }
 
 
+function project_create(path, full = false) {
+    if (full) {
+        execute(`mkdir ${path}`);
+    }
+    else {
+        execute(`mkdir ${config["project_dir_path"]}/${path}`);
+    }
+
+}
+
+function project_create_sync(path) {
+    project_create(`${config["project_sync_path"]}/${path}`, true);
+    execute(`ln -s ${config["project_sync_path"]}/${path} ${config["project_dir_path"]}/${path}`);
+}
+
+function project_git_init(path) {
+    execute(`git init ${config["project_dir_path"]}/${path}`)
+}
+
+
 parser
     .version('0.1.0', '-V, --version')
     .option('-v, --verbose', 'enable verbose', () => {
@@ -48,16 +68,16 @@ parser
         log(0, 'Editor is set to ' + options.editor + '.');
 
         if (options.sync === true) {
-            execute(`scripts/create_sync.sh ${config["project_sync_path"]} ${config["project_dir_path"]} ${project}`);
+            project_create_sync(project);
             log(0, 'Created the sync project file.');
         }
         else {
-            execute(`scripts/create_project.sh ${config["project_dir_path"]} ${project}`);
+            project_create(project);
             log(0, 'Created the project file.');
         }
 
         if (options.git === true) {
-            execute(`scripts/git_init.sh ${config["project_dir_path"]}/${project}`);
+            project_git_init(project);
             log(0, 'Created the git repository');
         }
 
