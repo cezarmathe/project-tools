@@ -61,6 +61,7 @@ parser
     .option('-s, --sync', 'create the project in a synced folder and symlink it in the projects directory')
     .option('-e, --editor', 'open the project in the project editor')
     .option('-t, --terminal', 'open the project in a new terminal window')
+    .option('-f, --file-manager', 'open the project in the file manager')
     .action((project, options) => {
         log(0, 'Creating the project ' + project + '.');
         log(0, 'Sync is set to ' + options.sync + '.');
@@ -86,14 +87,19 @@ parser
             log(0, 'Opened the project in the editor.');
         }
 
+        if (options.filemanager === true) {
+            execute(`thunar ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in a file manager.');
+        }
+
         if (options.terminal === true) {
-            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`)
-            log(0, 'Opened the project in a new terminal window.')
+            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in a new terminal window.');
         }
         // TODO: open the project in the same terminal
         else {
-            execute(`cd ${config["project_dir_path"]}/${project}`)
-            log(0, 'Opened the project in the same terminal.')
+            execute(`cd ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in the same terminal.');
         }
         process.exit();
 
@@ -105,6 +111,7 @@ parser
     .description('open an existing project')
     .option('-e, --editor', 'open the project in the project editor')
     .option('-t, --terminal', 'open the project in a new terminal window')
+    .option('-f, --filemanager', 'open the project in the project editor')
     .action((project, options) => {
         log(0, 'Opening the project ' + project + '.');
         log(0, 'Editor is set to ' + options.editor + '.');
@@ -115,14 +122,24 @@ parser
         }
 
         if (options.terminal === true) {
-            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`)
-            log(0, 'Opened the project in a new terminal window.')
+            execute(`xfce4-terminal --default-working-directory=${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in a new terminal window.');
+        }
+
+        if (options.filemanager === true) {
+            execute(`thunar ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in a file manager.');
+        }
+
+        if (options.editor === true) {
+            execute(`${config["editor"]} ${config["project_dir_path"]}/${project}`);
+            log(0, 'Opened the project in the editor.');
         }
         // TODO: open the project in the same terminal
         else {
-            execute(`cd ${config["project_dir_path"]}/${project}`)
+            execute(`cd ${config["project_dir_path"]}/${project}`);
             execute(`exec bash`);
-            log(0, 'Opened the project in the same terminal.')
+            log(0, 'Opened the project in the same terminal.');
         }
         process.exit();
     });
